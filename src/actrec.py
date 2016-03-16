@@ -624,8 +624,8 @@ def train(dim_out=100, # hidden layer dim for outputs
           reload_=False,
           training_stride=1,
           testing_stride=8,
-          last_n=16,
-          fps=30):
+          last_n=3,
+          fps=3):
 
     # Model options
     model_options = locals().copy()

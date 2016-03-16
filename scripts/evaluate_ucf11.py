@@ -77,8 +77,8 @@ if __name__ == '__main__':
         'reload': [False],
 	'training_stride': [1],
 	'testing_stride': [1],
-        'last_n': [30],			# timesteps from the end used for computing prediction
-        'fps': [30]
+        'last_n': [3],			# timesteps from the end used for computing prediction
+        'fps': [3]
     }
 
     if len(sys.argv) > 1:

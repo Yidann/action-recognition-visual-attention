@@ -100,11 +100,11 @@ class DataHandler(object):
         break
 
     if data_pb.dataset=='ucf11':
-      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],49,1024],order='F').astype('float32')
+      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='h2mAP':
-      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],49,1024],order='F').astype('float32')
+      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='hmdb51gln':
-      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],49,1024],order='F').astype('float32')
+      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512],order='F').astype('float32')
 
     self.batch_label_ = self.batch_label_.astype('int64')
     return self.batch_data_, self.batch_label_, n_examples
@@ -143,11 +143,11 @@ class DataHandler(object):
       self.batch_data_[n:,0, :] = np.tile(self.batch_data_[n-1,0, :],(self.seq_length_-n,1))
 
     if data_pb.dataset=='ucf11':
-      data_ = data_.reshape([data_.shape[0],data_.shape[1],49,1024],order='F').astype('float32')
+      data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='h2mAP':
-      data_ = data_.reshape([data_.shape[0],data_.shape[1],49,1024],order='F').astype('float32')
+      data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='hmdb51gln':
-      data_ = data_.reshape([data_.shape[0],data_.shape[1],49,1024],order='F').astype('float32')
+      data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512],order='F').astype('float32')
 
     f.close()
 
@@ -202,7 +202,7 @@ class DataHandler(object):
       np.random.shuffle(self.labels_)
 
 class TrainProto(object):
-  def __init__(self, bs, maxlen, stride, dataset, fps=30):
+  def __init__(self, bs, maxlen, stride, dataset, fps=3):
     self.num_frames = maxlen
     self.stride = stride
     self.randomize = True
@@ -210,10 +210,10 @@ class TrainProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/ais/gobi3/u/shikhar/ucf11/dataset/train_features.h5'
-      self.num_frames_file = '/ais/gobi3/u/shikhar/ucf11/dataset/train_framenum.txt'
-      self.labels_file     = '/ais/gobi3/u/shikhar/ucf11/dataset/train_labels.txt'
-      self.vid_name_file   = '/ais/gobi3/u/shikhar/ucf11/dataset/train_filename.txt'
+      self.data_file       = '/ucf11info/train_features.h5'
+      self.num_frames_file = '/ucf11info/train_framenum.txt'
+      self.labels_file     = '/ucf11info/train_labels.txt'
+      self.vid_name_file   = '/ucf11info/train_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_features.h5'
@@ -229,7 +229,7 @@ class TrainProto(object):
       self.dataset_name    = 'features'
 
 class TestTrainProto(object):
-  def __init__(self, bs, maxlen, stride, dataset, fps=30):
+  def __init__(self, bs, maxlen, stride, dataset, fps=3):
     self.num_frames = maxlen
     self.stride = stride
     self.randomize = False
@@ -237,10 +237,10 @@ class TestTrainProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/ais/gobi3/u/shikhar/ucf11/dataset/train_features.h5'
-      self.num_frames_file = '/ais/gobi3/u/shikhar/ucf11/dataset/train_framenum.txt'
-      self.labels_file     = '/ais/gobi3/u/shikhar/ucf11/dataset/train_labels.txt'
-      self.vid_name_file   = '/ais/gobi3/u/shikhar/ucf11/dataset/train_filename.txt'
+      self.data_file       = '/ucf11info/train_features.h5'
+      self.num_frames_file = '/ucf11info/train_framenum.txt'
+      self.labels_file     = '/ucf11info/train_labels.txt'
+      self.vid_name_file   = '/ucf11info/train_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_features.h5'
@@ -256,7 +256,7 @@ class TestTrainProto(object):
       self.dataset_name    = 'features'
 
 class TestValidProto(object):
-  def __init__(self, bs, maxlen, stride, dataset, fps=30):
+  def __init__(self, bs, maxlen, stride, dataset, fps=3):
     self.num_frames = maxlen
     self.stride = stride
     self.randomize = False
@@ -264,10 +264,10 @@ class TestValidProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/ais/gobi3/u/shikhar/ucf11/dataset/valid_features.h5'
-      self.num_frames_file = '/ais/gobi3/u/shikhar/ucf11/dataset/valid_framenum.txt'
-      self.labels_file     = '/ais/gobi3/u/shikhar/ucf11/dataset/valid_labels.txt'
-      self.vid_name_file   = '/ais/gobi3/u/shikhar/ucf11/dataset/valid_filename.txt'
+      self.data_file       = '/ucf11info/valid_features.h5'
+      self.num_frames_file = '/ucf11info/valid_framenum.txt'
+      self.labels_file     = '/ucf11info/valid_labels.txt'
+      self.vid_name_file   = '/ucf11info/valid_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/valid_features.h5'
@@ -283,7 +283,7 @@ class TestValidProto(object):
       self.dataset_name    = 'features'
 
 class TestTestProto(object):
-  def __init__(self, bs, maxlen, stride, dataset, fps=30):
+  def __init__(self, bs, maxlen, stride, dataset, fps=3):
     self.num_frames = maxlen
     self.stride = stride
     self.randomize = False
@@ -291,10 +291,10 @@ class TestTestProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/ais/gobi3/u/shikhar/ucf11/dataset/test_features.h5'
-      self.num_frames_file = '/ais/gobi3/u/shikhar/ucf11/dataset/test_framenum.txt'
-      self.labels_file     = '/ais/gobi3/u/shikhar/ucf11/dataset/test_labels.txt'
-      self.vid_name_file   = '/ais/gobi3/u/shikhar/ucf11/dataset/test_filename.txt'
+      self.data_file       = '/ucf11info/test_features.h5'
+      self.num_frames_file = '/ucf11info/test_framenum.txt'
+      self.labels_file     = '/ucf11info/test_labels.txt'
+      self.vid_name_file   = '/ucf11info/test_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/test_features.h5'
@@ -310,7 +310,7 @@ class TestTestProto(object):
       self.dataset_name    = 'features'
 
 def main():
-  fps = 30
+  fps = 3
   data_pb = TrainProto(128,30,1,'h2mAP',fps)
   dh = DataHandler(data_pb)
   start      = time.time()
