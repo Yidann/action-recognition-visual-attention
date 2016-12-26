@@ -1,8 +1,14 @@
 *.swp
 *.pyc
-*.txt
 *.npz
 *.pkl
 *.bak
 *.nfs*
+*.h5
 *.ipynb_checkpoints*
+data/*
+UCF11/*
+ucf11info/*
+.idea
+util/video_test/*
+util/build/*

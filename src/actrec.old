@@ -704,10 +704,7 @@ def train(dim_out=100, # hidden layer dim for outputs
 
     if alpha_c > 0.:
         alpha_c = theano.shared(numpy.float32(alpha_c), name='alpha_c')
-        if selector:
-            alpha_reg = alpha_c * ((1.-opts_out['selector'].sum(0))**2).mean()#0519 regularization     
-        else: 
-            alpha_reg = alpha_c * ((1.-alphas.sum(0))**2).sum(0).mean()
+        alpha_reg = alpha_c * ((1.-alphas.sum(0))**2).sum(0).mean()
         cost += alpha_reg
 
     # gradient computation
@@ -720,7 +717,7 @@ def train(dim_out=100, # hidden layer dim for outputs
     history_errs = []
     # reload history
     if reload_ and os.path.exists(saveto):
-        history_errs = numpy.load(saveto)['history_errs'].tolist()
+		history_errs = numpy.load(saveto)['history_errs'].tolist()
     best_p = None
     bad_count = 0
 
