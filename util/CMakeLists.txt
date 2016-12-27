@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( C3D )
+find_package( OpenCV REQUIRED )
+add_executable( C3D c3d_lists )
+target_link_libraries( C3D ${OpenCV_LIBS} )

@@ -2,10 +2,6 @@ import numpy
 import sys
 import argparse
 
-import util.gpu_util
-board = util.gpu_util.LockGPU()
-print 'GPU Lock Acquired'
-
 from src.actrec import train
 
 def main(job_id, params):
@@ -49,7 +45,7 @@ def main(job_id, params):
 if __name__ == '__main__':
     options = {
         'dim_out': [1024],		# hidden layer dim for outputs
-        'ctx_dim': [1024],		# context vector dimensionality
+        'ctx_dim': [512],		# context vector dimensionality
         'dim': [1024],			# the number of LSTM units
         'n_actions': [51],		# number of digits to predict
         'n_layers_att': [3],
@@ -64,7 +60,7 @@ if __name__ == '__main__':
         'temperature_inverse': [1],
         'learning_rate': [0.00001],
         'selector': [False],
-        'maxlen': [30],
+        'maxlen': [15],
         'optimizer': ['sgd'],
         'batch_size': [128],
         'valid_batch_size': [256],
@@ -78,13 +74,11 @@ if __name__ == '__main__':
 	'training_stride': [1],
 	'testing_stride': [1],
         'last_n': [16],			# timesteps from the end used for computing prediction
-        'fps': [30]
+        'fps': [4]
     }
 
     if len(sys.argv) > 1:
         options.update(eval("{%s}"%sys.argv[1]))
 
     main(0, options)
-    util.gpu_util.FreeGPU(board)
-    print 'GPU freed'
 
