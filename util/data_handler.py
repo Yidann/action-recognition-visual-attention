@@ -311,7 +311,7 @@ class TestTestProto(object):
 
 def main():
   fps = 3
-  data_pb = TrainProto(128,30,1,'h2mAP',fps)
+  data_pb = TrainProto(128,30,1,'hmdb51gln',fps)
   dh = DataHandler(data_pb)
   start      = time.time()
   for i in xrange(dh.dataset_size_/dh.batch_size_):
