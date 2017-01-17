@@ -104,7 +104,7 @@ class DataHandler(object):
     elif data_pb.dataset=='h2mAP':
       self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='hmdb51gln':
-      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512]).astype('float32')
+      self.batch_data_ = self.batch_data_.reshape([self.batch_data_.shape[0],self.batch_data_.shape[1],16,512],order='F').astype('float32')
 
     self.batch_label_ = self.batch_label_.astype('int64')
     return self.batch_data_, self.batch_label_, n_examples
@@ -147,7 +147,7 @@ class DataHandler(object):
     elif data_pb.dataset=='h2mAP':
       data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512],order='F').astype('float32')
     elif data_pb.dataset=='hmdb51gln':
-      data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512]).astype('float32')
+      data_ = data_.reshape([data_.shape[0],data_.shape[1],16,512],order='F').astype('float32')
 
     f.close()
 
@@ -210,11 +210,11 @@ class TrainProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/home/wyd/action-recognition-visual-attention/ucf11info/train_features.h5'
-      self.num_frames_file = '/home/wyd/action-recognition-visual-attention/ucf11info/train_framenum.txt'
-      self.labels_file     = '/home/wyd/action-recognition-visual-attention/ucf11info/train_labels.txt'
-      self.vid_name_file   = '/home/wyd/action-recognition-visual-attention/ucf11info/train_filename.txt'
-      self.dataset_name    = 'train_features'
+      self.data_file       = './data/c3d/ucf11/pool5/train_features.h5'
+      self.num_frames_file = './data/c3d/ucf11/pool5/train_framenum.txt'
+      self.labels_file     = './data/c3d/ucf11/pool5/train_labels.txt'
+      self.vid_name_file   = './data/c3d/ucf11/pool5/train_filename.txt'
+      self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_features.h5'
       self.num_frames_file = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_framenum.txt'
@@ -222,10 +222,10 @@ class TrainProto(object):
       self.vid_name_file   = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='hmdb51gln':
-      self.data_file       = '../data/train_features.h5'
-      self.num_frames_file = '../data/train_framenum.txt'
-      self.labels_file     = '../data/train_labels.txt'
-      self.vid_name_file   = '../data/train_filename.txt'
+      self.data_file       = './data/c3d/hmdb51/pool5/train_features.h5'
+      self.num_frames_file = './data/c3d/hmdb51/pool5/train_framenum.txt'
+      self.labels_file     = './data/c3d/hmdb51/pool5/train_labels.txt'
+      self.vid_name_file   = './data/c3d/hmdb51/pool5/train_filename.txt'
       self.dataset_name    = 'features'
 
 class TestTrainProto(object):
@@ -237,11 +237,11 @@ class TestTrainProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/home/wyd/action-recognition-visual-attention/ucf11info/train_features.h5'
-      self.num_frames_file = '/home/wyd/action-recognition-visual-attention/ucf11info/train_framenum.txt'
-      self.labels_file     = '/home/wyd/action-recognition-visual-attention/ucf11info/train_labels.txt'
-      self.vid_name_file   = '/home/wyd/action-recognition-visual-attention/ucf11info/train_filename.txt'
-      self.dataset_name    = 'train_features'
+      self.data_file       = './data/c3d/ucf11/pool5/train_features.h5'
+      self.num_frames_file = './data/c3d/ucf11/pool5/train_framenum.txt'
+      self.labels_file     = './data/c3d/ucf11/pool5/train_labels.txt'
+      self.vid_name_file   = './data/c3d/ucf11/pool5/train_filename.txt'
+      self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_features.h5'
       self.num_frames_file = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_framenum.txt'
@@ -249,10 +249,10 @@ class TestTrainProto(object):
       self.vid_name_file   = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/train_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='hmdb51gln':
-      self.data_file       = '../data/train_features.h5'
-      self.num_frames_file = '../data/train_framenum.txt'
-      self.labels_file     = '../data/train_labels.txt'
-      self.vid_name_file   = '../data/train_filename.txt'
+      self.data_file       = './data/c3d/hmdb51/pool5/train_features.h5'
+      self.num_frames_file = './data/c3d/hmdb51/pool5/train_framenum.txt'
+      self.labels_file     = './data/c3d/hmdb51/pool5/train_labels.txt'
+      self.vid_name_file   = './data/c3d/hmdb51/pool5/train_filename.txt'
       self.dataset_name    = 'features'
 
 class TestValidProto(object):
@@ -264,11 +264,11 @@ class TestValidProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/home/wyd/action-recognition-visual-attention/ucf11info/valid_features.h5'
-      self.num_frames_file = '/home/wyd/action-recognition-visual-attention/ucf11info/valid_framenum.txt'
-      self.labels_file     = '/home/wyd/action-recognition-visual-attention/ucf11info/valid_labels.txt'
-      self.vid_name_file   = '/home/wyd/action-recognition-visual-attention/ucf11info/valid_filename.txt'
-      self.dataset_name    = 'valid_features'
+      self.data_file       = './data/c3d/ucf11/pool5/test_features.h5'
+      self.num_frames_file = './data/c3d/ucf11/pool5/test_framenum.txt'
+      self.labels_file     = './data/c3d/ucf11/pool5/test_labels.txt'
+      self.vid_name_file   = './data/c3d/ucf11/pool5/test_filename.txt'
+      self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/valid_features.h5'
       self.num_frames_file = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/valid_framenum.txt'
@@ -276,10 +276,10 @@ class TestValidProto(object):
       self.vid_name_file   = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/valid_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='hmdb51gln':
-      self.data_file       = '../data/test_features.h5'
-      self.num_frames_file = '../data/test_framenum.txt'
-      self.labels_file     = '../data/test_labels.txt'
-      self.vid_name_file   = '../data/test_filename.txt'
+      self.data_file       = './data/c3d/hmdb51/pool5/test_features.h5'
+      self.num_frames_file = './data/c3d/hmdb51/pool5/test_framenum.txt'
+      self.labels_file     = './data/c3d/hmdb51/pool5/test_labels.txt'
+      self.vid_name_file   = './data/c3d/hmdb51/pool5/test_filename.txt'
       self.dataset_name    = 'features'
 
 class TestTestProto(object):
@@ -291,11 +291,11 @@ class TestTestProto(object):
     self.dataset = dataset
     self.fps = fps
     if dataset=='ucf11':
-      self.data_file       = '/home/wyd/action-recognition-visual-attention/ucf11info/test_features.h5'
-      self.num_frames_file = '/home/wyd/action-recognition-visual-attention/ucf11info/test_framenum.txt'
-      self.labels_file     = '/home/wyd/action-recognition-visual-attention/ucf11info/test_labels.txt'
-      self.vid_name_file   = '/home/wyd/action-recognition-visual-attention/ucf11info/test_filename.txt'
-      self.dataset_name    = 'test_features'
+      self.data_file       = './data/c3d/ucf11/pool5/test_features.h5'
+      self.num_frames_file = './data/c3d/ucf11/pool5/test_framenum.txt'
+      self.labels_file     = './data/c3d/ucf11/pool5/test_labels.txt'
+      self.vid_name_file   = './data/c3d/ucf11/pool5/test_filename.txt'
+      self.dataset_name    = 'features'
     elif dataset=='h2mAP':
       self.data_file       = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/test_features.h5'
       self.num_frames_file = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/test_framenum.txt'
@@ -303,10 +303,10 @@ class TestTestProto(object):
       self.vid_name_file   = '/ais/gobi3/u/shikhar/hollywood2/mAPdataset/test_filename.txt'
       self.dataset_name    = 'features'
     elif dataset=='hmdb51gln':
-      self.data_file       = '../data/test_features.h5'
-      self.num_frames_file = '../data/test_framenum.txt'
-      self.labels_file     = '../data/test_labels.txt'
-      self.vid_name_file   = '../data/test_filename.txt'
+      self.data_file       = './data/c3d/hmdb51/pool5/test_features.h5'
+      self.num_frames_file = './data/c3d/hmdb51/pool5/test_framenum.txt'
+      self.labels_file     = './data/c3d/hmdb51/pool5/test_labels.txt'
+      self.vid_name_file   = './data/c3d/hmdb51/pool5/test_filename.txt'
       self.dataset_name    = 'features'
 
 def main():

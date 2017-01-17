@@ -66,16 +66,16 @@ def read_binary_blob(filename):
 def _pf(pp, ap_name):
     return '%s_%s' % (pp, ap_name)
 
-dataset = 'hmdb51'
+dataset = 'ucf11'
 
 if dataset is 'ucf11':
-    actions = ['basketball', 'biking', 'diving', 'golf_swing', 'horse_riding', 'soccer_juggling'
+    actions = ['basketball', 'biking', 'diving', 'golf_swing', 'horse_riding', 'soccer_juggling',
                'swing', 'tennis_swing', 'trampoline_jumping', 'volleyball_spiking', 'walking']
     output_dir = '/home/wyd/C3D/examples/c3d_feature_extraction/output/UCF11/'
     bg_action = len(output_dir)
 
     # train test split
-    with open('./lists/video_lists.txt') as vf:
+    with open('./lists/ucf11_video_lists.txt') as vf:
         file_list = vf.read().splitlines()
 
     random.shuffle(file_list)
@@ -83,11 +83,11 @@ if dataset is 'ucf11':
     X_train, X_test = train_test_split(file_list, test_size=0.3)
 
     for pref in ['train', 'test']:
-        feat_h5f = h5py.File('../data/' + _pf(pref, 'features.h5'), 'w')
-        feat_framenum = open('../data/' + _pf(pref, 'framenum.txt'), 'w')
-        feat_filename = open('../data/' + _pf(pref, 'filename.txt'), 'w')
-        feat_labels = open('../data/' + _pf(pref, 'labels.txt'), 'w')
-        feat_h5dset = feat_h5f.create_dataset('features', (5000, 8192), compression="gzip")
+        feat_h5f = h5py.File('../data/c3d/ucf11/pool5/' + _pf(pref, 'features.h5'), 'w')
+        feat_framenum = open('../data/c3d/ucf11/pool5/' + _pf(pref, 'framenum.txt'), 'w')
+        feat_filename = open('../data/c3d/ucf11/pool5/' + _pf(pref, 'filename.txt'), 'w')
+        feat_labels = open('../data/c3d/ucf11/pool5/' + _pf(pref, 'labels.txt'), 'w')
+        feat_h5dset = feat_h5f.create_dataset('features', (30000, 8192), compression="gzip")
 
         index = 0
 
@@ -97,18 +97,18 @@ if dataset is 'ucf11':
             feat_dir = video_word[0].replace('input', 'output').strip('.avi')
             feat_filename.write(feat_dir + '\n')
 
-            feat_num = int(video_word[2])
-            feat_framenum.write(str(feat_num) + '\n')
-
-            for action in actions:
-                if feat_dir.find(action, bg_action) != -1:
-                    feat_labels.write(str(actions.index(action)) + '\n')
+            label_name = feat_dir[bg_action:-1]
+            label_name = label_name[:label_name.find('/')]
+            print 'label: ', label_name
+            assert label_name in actions, 'no label found'
+            feat_labels.write(str(actions.index(label_name)) + '\n')
             _f_num = 0
             for root, subdirs, files in os.walk(feat_dir):
                 for name in files:
                     if name.find('.pool5') != -1:
                             _f_num += 1
-            assert _f_num == feat_num
+            feat_num = _f_num
+            feat_framenum.write(str(feat_num) + '\n')
 
             for feat_ind in range(feat_num):
                 _feat_name = '%06d.pool5' % (feat_ind*8)
@@ -141,17 +141,17 @@ elif dataset is 'hmdb51':
     split_dir = '/home/wyd/C3D/examples/c3d_feature_extraction/input/HMDB51/testTrainMulti_7030_splits/'
     split_id = 1
 
-    train_feat_h5f = h5py.File('../data/train_features.h5', 'w')
-    train_feat_framenum = open('../data/train_framenum.txt', 'w')
-    train_feat_filename = open('../data/train_filename.txt', 'w')
-    train_feat_labels = open('../data/train_labels.txt', 'w')
-    train_feat_h5dset = train_feat_h5f.create_dataset('features', (600000, 8192), compression="gzip")
+    train_feat_h5f = h5py.File('../data/c3d/hmdb51/conv5b/train_features.h5', 'w')
+    train_feat_framenum = open('../data/c3d/hmdb51/conv5b/train_framenum.txt', 'w')
+    train_feat_filename = open('../data/c3d/hmdb51/conv5b/train_filename.txt', 'w')
+    train_feat_labels = open('../data/c3d/hmdb51/conv5b/train_labels.txt', 'w')
+    train_feat_h5dset = train_feat_h5f.create_dataset('features', (70000, 25088), compression="gzip")
 
-    test_feat_h5f = h5py.File('../data/test_features.h5', 'w')
-    test_feat_framenum = open('../data/test_framenum.txt', 'w')
-    test_feat_filename = open('../data/test_filename.txt', 'w')
-    test_feat_labels = open('../data/test_labels.txt', 'w')
-    test_feat_h5dset = test_feat_h5f.create_dataset('features', (200000, 8192), compression="gzip")
+    test_feat_h5f = h5py.File('../data/c3d/hmdb51/conv5b/test_features.h5', 'w')
+    test_feat_framenum = open('../data/c3d/hmdb51/conv5b/test_framenum.txt', 'w')
+    test_feat_filename = open('../data/c3d/hmdb51/conv5b/test_filename.txt', 'w')
+    test_feat_labels = open('../data/c3d/hmdb51/conv5b/test_labels.txt', 'w')
+    test_feat_h5dset = test_feat_h5f.create_dataset('features', (70000, 25088), compression="gzip")
 
     train_index = 0
     test_index = 0
@@ -167,12 +167,12 @@ elif dataset is 'hmdb51':
                 for rt, subs, fs in os.walk(feat_dir):
                     feat_num = 0
                     for f_name in fs:
-                        if f_name.find('.pool5') != -1:
+                        if f_name.find('.conv5b_2') != -1:
                             feat_num += 1
                 print 'chunk num: ', feat_num
 
                 for feat_ind in range(feat_num):
-                    _feat_name = '%06d.pool5' % (feat_ind*8)
+                    _feat_name = '%06d.conv5b_2' % (feat_ind*8)
                     feat_name = os.path.join(feat_dir, _feat_name) 
                     #print 'feature name: ', feat_name
                     ss, bb, r_status = read_binary_blob(feat_name)

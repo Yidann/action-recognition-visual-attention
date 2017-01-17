@@ -12,3 +12,4 @@ ucf11info/*
 .idea
 util/video_test/*
 util/build/*
+results/*

@@ -48,36 +48,36 @@ def main(job_id, params):
 
 if __name__ == '__main__':
     options = {
-        'dim_out': [24],		# hidden layer dim for outputs
+        'dim_out': [64],		# hidden layer dim for outputs
         'ctx_dim': [512],		# context vector dimensionality
-        'dim': [24],			# the number of LSTM units
+        'dim': [64],			# the number of LSTM units
         'n_actions': [11],		# number of digits to predict
         'n_layers_att':[1],
         'n_layers_out': [1],
         'n_layers_init': [1],
         'ctx2out': [False],
         'patience': [10],
-        'max_epochs': [10],
-        'dispFreq': [20],
+        'max_epochs': [15],
+        'dispFreq': [10],
         'decay_c': [0.0], 
         'alpha_c': [0.0], 
         'temperature_inverse': [1],
         'learning_rate': [0.0001],
-        'selector': [True],
+        'selector': [False],
         'maxlen': [15],
         'optimizer': ['adam'],
         'batch_size': [128],
-        'valid_batch_size': [128],
-        'model': ['model_ucf11.npz'],
-        'validFreq': [100],
-        'saveFreq': [100],		# save the parameters after every saveFreq updates
+        'valid_batch_size': [512],
+        'model': ['model_ucf11_avg.npz'],
+        'validFreq': [500],
+        'saveFreq': [500],		# save the parameters after every saveFreq updates
         'dataset': ['ucf11'],
         'dictionary': [None],
         'use_dropout': [True],
         'reload': [False],
 	'training_stride': [1],
 	'testing_stride': [1],
-        'last_n': [4],			# timesteps from the end used for computing prediction
+        'last_n': [15],			# timesteps from the end used for computing prediction
         'fps': [10]
     }
 

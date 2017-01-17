@@ -193,16 +193,16 @@ def param_init_lstm_cond(options, params, prefix='lstm_cond', nin=None, dim=None
     params[_p(prefix,'b')] = numpy.zeros((4 * dim,)).astype('float32')
 
     # attention: context -> hidden
-    Wc_att = norm_weight(dimctx, ortho=False)
-    params[_p(prefix,'Wc_att')] = Wc_att
+    #Wc_att = norm_weight(dimctx, ortho=False)
+    #params[_p(prefix,'Wc_att')] = Wc_att
 
     # attention: LSTM -> hidden
-    Wd_att = norm_weight(dim,dimctx)
-    params[_p(prefix,'Wd_att')] = Wd_att
+    #Wd_att = norm_weight(dim,dimctx)
+    #params[_p(prefix,'Wd_att')] = Wd_att
 
     # attention: hidden bias
-    b_att = numpy.zeros((dimctx,)).astype('float32')
-    params[_p(prefix,'b_att')] = b_att
+    #b_att = numpy.zeros((dimctx,)).astype('float32')
+    #params[_p(prefix,'b_att')] = b_att
 
     # deeper attention
     if options['n_layers_att'] > 1:
@@ -211,10 +211,10 @@ def param_init_lstm_cond(options, params, prefix='lstm_cond', nin=None, dim=None
             params[_p(prefix,'b_att_%d'%lidx)] = numpy.zeros((dimctx,)).astype('float32')
 
     # attention: 
-    U_att = norm_weight(dimctx,1)
-    params[_p(prefix,'U_att')] = U_att
-    c_att = numpy.zeros((1,)).astype('float32')
-    params[_p(prefix, 'c_tt')] = c_att
+    #U_att = norm_weight(dimctx,1)
+    #params[_p(prefix,'U_att')] = U_att
+    #c_att = numpy.zeros((1,)).astype('float32')
+    #params[_p(prefix, 'c_tt')] = c_att
 
     if options['selector']:
         # attention: selector
@@ -258,26 +258,26 @@ def lstm_cond_layer(tparams, state_below, options, prefix='lstm',
             return _x[:, :, n*dim:(n+1)*dim]
         return _x[:, n*dim:(n+1)*dim]
 
-    def _step(m_, x_, h_, c_, a_, ct_, dp_=None, dp_att_=None):
+    def _step(m_, x_, h_, c_, ct_, dp_=None, dp_att_=None):
         # mask, xt, ht-1, ct-1, alpha, ctx
         # attention
         # print '\n\ncheck\n\n'
-        pstate_ = tensor.dot(h_, tparams[_p(prefix,'Wd_att')]) # pstate_
-        pctx_ = tensor.dot(x_, tparams[_p(prefix,'Wc_att')]) + tparams[_p(prefix, 'b_att')]
-        if options['n_layers_att'] > 1:
-            for lidx in xrange(1, options['n_layers_att']):
-                pctx_ = tensor.dot(pctx_, tparams[_p(prefix,'W_att_%d'%lidx)])+tparams[_p(prefix, 'b_att_%d'%lidx)]
-                if lidx < options['n_layers_att'] - 1:
-                    pctx_ = tanh(pctx_)
-        pctx_ = pctx_ + pstate_[:,None,:]
-        pctx_list = []
-        pctx_list.append(pctx_)
-        pctx_ = tanh(pctx_)
-        alpha = tensor.dot(pctx_, tparams[_p(prefix,'U_att')])+tparams[_p(prefix, 'c_tt')]
-        alpha_pre = alpha
-        alpha_shp = alpha.shape
-        alpha = tensor.nnet.softmax(options['temperature_inverse']*alpha.reshape([alpha_shp[0],alpha_shp[1]])) # softmax
-        ctx_ = (x_ * alpha[:,:,None]).sum(1) # current context
+        #pstate_ = tensor.dot(h_, tparams[_p(prefix,'Wd_att')]) # pstate_
+        #pctx_ = tensor.dot(x_, tparams[_p(prefix,'Wc_att')]) + tparams[_p(prefix, 'b_att')]
+        #if options['n_layers_att'] > 1:
+        #    for lidx in xrange(1, options['n_layers_att']):
+        #        pctx_ = tensor.dot(pctx_, tparams[_p(prefix,'W_att_%d'%lidx)])+tparams[_p(prefix, 'b_att_%d'%lidx)]
+        #        if lidx < options['n_layers_att'] - 1:
+        #            pctx_ = tanh(pctx_)
+        #pctx_ = pctx_ + pstate_[:,None,:]
+        #pctx_list = []
+        #pctx_list.append(pctx_)
+        #pctx_ = tanh(pctx_)
+        #alpha = tensor.dot(pctx_, tparams[_p(prefix,'U_att')])+tparams[_p(prefix, 'c_tt')]
+        #alpha_pre = alpha
+        #alpha_shp = alpha.shape
+        #alpha = tensor.nnet.softmax(options['temperature_inverse']*alpha.reshape([alpha_shp[0],alpha_shp[1]])) # softmax
+        ctx_ = (x_ / 16).sum(1) # current context
         #print '\n\ncheck\n\n'
         if options['selector']:
             sel_ = tensor.nnet.sigmoid(tensor.dot(h_, tparams[_p(prefix, 'W_sel')])+tensor.dot(ctx_, tparams[_p(prefix, 'W_csel')])+tparams[_p(prefix,'b_sel')])
@@ -301,32 +301,29 @@ def lstm_cond_layer(tparams, state_below, options, prefix='lstm',
         h = o * tensor.tanh(c)                  # ht = ot * thanh(ct)
         h = m_[:,None] * h + (1. - m_)[:,None] * h_
 
-        rval = [h, c, alpha, ctx_]
+        rval = [h, c, ctx_]
         if options['selector']:
             rval += [sel_]
-        rval += [pstate_, pctx_, i, f, o, preact, alpha_pre]+pctx_list
+        rval += [i, f, o, preact]
         # print '\n\ncheck\n\n'
         return rval
 
     if options['selector']:
-        _step0 = lambda m_, x_, h_, c_, a_, ct_, sel_: _step(m_, x_, h_, c_, a_, ct_)
+        _step0 = lambda m_, x_, h_, c_, ct_, sel_: _step(m_, x_, h_, c_, ct_)
     else:
-        _step0 = lambda m_, x_, h_, c_, a_, ct_: _step(m_, x_, h_, c_, a_, ct_)
+        _step0 = lambda m_, x_, h_, c_, ct_: _step(m_, x_, h_, c_, ct_)
 
     seqs = [mask, state_below]
     outputs_info = [init_state,
                     init_memory,
-                    tensor.alloc(0., n_samples, n_annotations),
                     tensor.alloc(0., n_samples, options['ctx_dim'])]
     if options['selector']:
         outputs_info += [tensor.alloc(0., n_samples)]
     outputs_info += [None,
                      None,
                      None,
-                     None,
-                     None,
-                     None,
-                     None] + [None]#*options['n_layers_att']
+                     None]
+                    
     rval, updates = theano.scan(_step0,
                                 sequences=seqs,
                                 outputs_info=outputs_info,
@@ -350,7 +347,6 @@ def build_model(tparams, options):
     n_samples = x.shape[1]
     n_annotations = x.shape[2]
     ctxdim = x.shape[3]
-  
     # action labels
     y = tensor.matrix('y', dtype='int64')
 
@@ -406,7 +402,6 @@ def build_model(tparams, options):
     logit = logit.reshape([logit_shp[0]*logit_shp[1], logit_shp[2]])  #(TSxBS,#actions)
     probs = tensor.nnet.softmax(logit)                                #(TSxBS,#actions)
     probs = probs.reshape([logit_shp[0], logit_shp[1], logit_shp[2]]) #(TS,BS,#actions)
-
     # Predictions
     preds = tensor.sum(probs[-last_n:, :, :],axis=0) #(BS,#actions)
     preds = tensor.argmax(preds,axis=1) # computed y; true y is in 'y' #(BS,1)
@@ -424,7 +419,7 @@ def build_model(tparams, options):
 
     return trng, use_noise, [x, mask, y], alphas, cost, opt_outs, preds
 
-def pred_acc(modelname, batch_size, f_preds, maxlen, data_test_pb, dh_test, test_dataset_size, num_test_batches, last_n, test=True, verbose=False):
+def pred_acc(modelname, batch_size, f_preds, maxlen, data_test_pb, dh_test, test_dataset_size, num_test_batches, last_n, test=True, verbose=True):
     """
     Make predictions for new data
     """
@@ -451,9 +446,9 @@ def pred_acc(modelname, batch_size, f_preds, maxlen, data_test_pb, dh_test, test
             print '%d/%d examples computed'%(n_done,n_examples)
 
     if test==True:
-        fileprefix = 'test_results_last{}_'.format(last_n)
+        fileprefix = 'test_avg_last{}_'.format(last_n)
     else:
-        fileprefix = 'train_results_last{}_'.format(last_n)
+        fileprefix = 'train_avg_last{}_'.format(last_n)
     tempfilename = fileprefix + modelname.split('/')[-1].split('.')[0] + '.txt'
     f = open(tempfilename, 'w')
     vid_idx = 0
@@ -648,7 +643,7 @@ def train(dim_out=100, # hidden layer dim for outputs
     if dataset_size % batch_size != 0:
         num_train_batches += 1
 
-    valid = True # not None
+    valid = None # not None
     test  = True # not None
 
     data_test_train_pb = TestTrainProto(valid_batch_size,maxlen,testing_stride,dataset,fps)

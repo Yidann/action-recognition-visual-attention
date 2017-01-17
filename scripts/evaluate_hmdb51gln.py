@@ -2,7 +2,7 @@ import numpy
 import sys
 import argparse
 
-from src.actrec import train
+from src.actrec_org import train
 
 def main(job_id, params):
     print 'Anything printed here will end up in the output directory for job #%d' % job_id
@@ -54,26 +54,26 @@ if __name__ == '__main__':
         'ctx2out': [False],
         'patience': [10],
         'max_epochs': [15],
-        'dispFreq': [100],
+        'dispFreq': [10],
         'decay_c': [0.00001], 
         'alpha_c': [0.0], 
         'temperature_inverse': [1],
         'learning_rate': [0.00001],
         'selector': [False],
         'maxlen': [15],
-        'optimizer': ['sgd'],
-        'batch_size': [128],
-        'valid_batch_size': [256],
+        'optimizer': ['adam'],
+        'batch_size': [64],
+        'valid_batch_size': [512],
         'model': ['model_hmdb51.npz'],
         'validFreq': [500],
         'saveFreq': [500],		# save the parameters after every saveFreq updates
         'dataset': ['hmdb51gln'],
         'dictionary': [None],
         'use_dropout': [True],
-        'reload': [True],
+        'reload': [False],
 	'training_stride': [1],
 	'testing_stride': [1],
-        'last_n': [1],			# timesteps from the end used for computing prediction
+        'last_n': [15],			# timesteps from the end used for computing prediction
         'fps': [10]
     }
 

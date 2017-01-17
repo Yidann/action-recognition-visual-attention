@@ -15,11 +15,11 @@ from get_frame_num import get_frame_num
 # # create input list
 # # <string path> <starting frame> <label>(0)
 # step_size = 8
-input_list = "./lists/c3d/input_lists.txt"
+input_list = "./lists/c3d/hmdb51/input_lists.txt"
 # input_f = open(input_list, 'w')
 # # create outputlist
 # # <output_prefix>
-output_list = "./lists/c3d/output_lists.txt"
+output_list = "./lists/c3d/hmdb51/output_lists.txt"
 # output_f = open(output_list, 'w')
 #
 # video_list_f = open('./lists/video_lists.txt', 'w')
@@ -59,16 +59,16 @@ output_list = "./lists/c3d/output_lists.txt"
 # output_f.close()
 # run
 data_dir = 'HMDB51'
-cpp_file = './cpp.sh'
-with open(cpp_file, 'w') as cf:
-    cf.write('./build/C3D ')
-    cf.write(data_dir)
-os.chmod(cpp_file, stat.S_IRWXU)
-subprocess.call(cpp_file, shell=True)
+#cpp_file = './cpp.sh'
+#with open(cpp_file, 'w') as cf:
+#    cf.write('./build/C3D ')
+#    cf.write(data_dir)
+#os.chmod(cpp_file, stat.S_IRWXU)
+#subprocess.call(cpp_file, shell=True)
 # change the prototxt file
 mean_file = "/home/wyd/C3D/examples/c3d_feature_extraction/sport1m_train16_128_mean.binaryproto"
 org_proto_file = "/home/wyd/C3D/examples/c3d_feature_extraction/prototxt/c3d_sport1m_feature_extractor_video.prototxt"
-proto_file = "./lists/c3d/c3d_sport1m_feature_extractor_video.prototxt"
+proto_file = "./lists/c3d/hmdb51/c3d_sport1m_feature_extractor_video.prototxt"
 proto_f = open(proto_file, 'w')
 for line in open(org_proto_file):
     words = line.split()
@@ -88,7 +88,7 @@ pretrained_model = "/home/wyd/C3D/examples/c3d_feature_extraction/conv3d_deepnet
 gpu_id = '0'
 batch_size = '50'
 batch_num = '136'
-feature_names = "pool5"
+feature_names = "conv5b"
 
 job_file = "./job.sh"
 # create job file
